@@ -1,0 +1,80 @@
+﻿<Window x:Class="FinancialAccounting.ReportsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Отчёты" Height="600" Width="900"
+        Background="#FFFDF9F3">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <!-- Добавлена новая строка для итогов -->
+        </Grid.RowDefinitions>
+
+        <!-- Заголовок -->
+        <TextBlock Text="Фильтры для отчёта" FontSize="20" FontWeight="Bold" Foreground="#FF9800" />
+
+        <!-- Фильтры -->
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,10,0,10" HorizontalAlignment="Left">
+            <StackPanel Margin="0,0,10,0">
+                <TextBlock Text="С:"/>
+                <DatePicker x:Name="StartDatePicker" Width="120"/>
+            </StackPanel>
+            <StackPanel Margin="0,0,10,0">
+                <TextBlock Text="По:"/>
+                <DatePicker x:Name="EndDatePicker" Width="120"/>
+            </StackPanel>
+            <StackPanel Margin="0,0,10,0">
+                <TextBlock Text="Тип:"/>
+                <ComboBox x:Name="TypeComboBox" Width="120">
+                    <ComboBoxItem Content="Все" IsSelected="True"/>
+                    <ComboBoxItem Content="Доход"/>
+                    <ComboBoxItem Content="Расход"/>
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Margin="0,0,10,0">
+                <TextBlock Text="Категория:"/>
+                <ComboBox x:Name="CategoryComboBox" Width="150"/>
+            </StackPanel>
+            <Button Content="Применить" Width="100" Background="#FF5722" Foreground="White" Click="ApplyFilters_Click"/>
+        </StackPanel>
+
+        <!-- Таблица с транзакциями -->
+        <DataGrid x:Name="ReportDataGrid" Grid.Row="2" AutoGenerateColumns="False"
+                  IsReadOnly="True" HeadersVisibility="Column" Margin="0,10"
+                  AlternatingRowBackground="#FFF5F5F5" GridLinesVisibility="Horizontal">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Дата" Binding="{Binding Date}" Width="*" />
+                <DataGridTextColumn Header="Тип" Binding="{Binding Type}" Width="*" />
+                <DataGridTextColumn Header="Категория" Binding="{Binding Category}" Width="*" />
+                <DataGridTextColumn Header="Сумма" Binding="{Binding Amount}" Width="*" />
+                <DataGridTextColumn Header="Описание" Binding="{Binding Description}" Width="2*" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Итоги -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10,0,0">
+            <TextBlock x:Name="IncomeTotalTextBlock" FontWeight="Bold" Foreground="#4CAF50" Margin="0,0,20,0"/>
+            <TextBlock x:Name="ExpenseTotalTextBlock" FontWeight="Bold" Foreground="#F44336" Margin="0,0,20,0"/>
+            <TextBlock x:Name="BalanceTotalTextBlock" FontWeight="Bold" Foreground="#2196F3"/>
+        </StackPanel>
+
+        <!-- Кнопки -->
+        <StackPanel Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <ComboBox x:Name="ExportFormatComboBox" Width="150" Margin="0,0,10,0">
+                <ComboBoxItem Content="CSV" IsSelected="True"/>
+                <ComboBoxItem Content="Word"/>
+                <ComboBoxItem Content="PDF"/>
+            </ComboBox>
+            <Button Content="Экспорт" Width="100" Background="#A25B00" Foreground="White"
+                    Click="ExportButton_Click" Margin="0,0,10,0"/>
+            <Button Content="Отправить на почту" Width="150" Margin="0,0,10,0"
+                    Background="#4CAF50" Foreground="White"
+                    Click="SendEmailReport_Click"/>
+            <Button Content="Назад" Width="100" Background="#D2691E" Foreground="White"
+                    Click="BackButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

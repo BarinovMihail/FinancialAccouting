@@ -1,0 +1,79 @@
+﻿<Window x:Class="FinancialAccounting.DataUploadWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Загрузка выписки" Height="600" Width="800"
+        Background="#FDF9F3" WindowStartupLocation="CenterScreen"
+        FontFamily="Segoe UI" Foreground="Black">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Верхний блок с радиокнопками и фильтрами -->
+            <RowDefinition Height="*"/>
+            <!-- DataGrid -->
+            <RowDefinition Height="Auto"/>
+            <!-- Кнопки внизу -->
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Выбор способа загрузки -->
+        <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0" Margin="0,0,20,0">
+            <TextBlock Text="Способ загрузки:" FontWeight="Bold" Margin="0,0,0,5"/>
+            <RadioButton Content="PDF/EXCEL" GroupName="UploadMethod" Checked="RadioButton_Checked" Margin="0,0,0,5"/>
+            <RadioButton Content="E-mail" GroupName="UploadMethod" Margin="0,0,0,5"/>
+            <RadioButton Content="Ручной ввод" GroupName="UploadMethod" Margin="0,0,0,5"/>
+        </StackPanel>
+
+        <!-- Фильтр -->
+        <!-- Фильтр -->
+        <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right">
+            <TextBlock Text="Фильтр:" FontWeight="Bold" Margin="0,0,0,5"/>
+            <ComboBox x:Name="CategoryComboBox" Width="150" Margin="0,0,0,10" SelectionChanged="CategoryComboBox_SelectionChanged">
+                <ComboBoxItem Content="Все категории" IsSelected="True"/>
+                <ComboBoxItem Content="Супермаркеты"/>
+                <ComboBoxItem Content="Переводы"/>
+            </ComboBox>
+
+            <!-- Горизонтальный выбор даты -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                <StackPanel Margin="0,0,10,0">
+                    <TextBlock Text="Дата с:" FontWeight="Bold"/>
+                    <DatePicker x:Name="StartDatePicker" Width="120" SelectedDateChanged="FilterDatePicker_SelectedDateChanged"/>
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Text="Дата по:" FontWeight="Bold"/>
+                    <DatePicker x:Name="EndDatePicker" Width="120" SelectedDateChanged="FilterDatePicker_SelectedDateChanged"/>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+        <TextBlock Name="txtFileName" Text="Файл не выбран"
+                   Margin="150,40,262,58" Foreground="Gray" Grid.ColumnSpan="2"/>
+
+        <!-- DataGrid -->
+        <DataGrid x:Name="TransactionsGrid" Grid.Row="1" Grid.ColumnSpan="2"
+                  AutoGenerateColumns="False" Margin="0,10,0,10"
+                  AlternatingRowBackground="#FFF5F5F5" GridLinesVisibility="Horizontal"
+                  Background="White" Foreground="Black">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Дата" Binding="{Binding Date}" Width="Auto"/>
+                <DataGridTextColumn Header="Категория" Binding="{Binding Category}" Width="*" />
+                <DataGridTextColumn Header="Сумма" Binding="{Binding Amount}" Width="Auto"/>
+                <DataGridTextColumn Header="Остаток" Binding="{Binding Balance}" Width="Auto"/>
+                <DataGridTextColumn Header="Описание" Binding="{Binding Description}" Width="2*" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Кнопки -->
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="0,10,0,0">
+            <Button Content="Обработать" Width="120" Height="40" Background="#D2691E" Foreground="White" Margin="5" Click="Processing_Click"/>
+            <Button Content="Сохранить в БД" Width="150" Height="40" Background="#D2691E" Foreground="White" Margin="5" Click="SaveDatabase_Click"/>
+            <Button Content="Очистить" Width="100" Height="40" Background="#D2691E" Foreground="White" Margin="5" Click="Button_Click_2"/>
+            <Button Content="Назад" Width="100" Height="40" Background="#A25B00" Foreground="White" Margin="5" Click="BackButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
