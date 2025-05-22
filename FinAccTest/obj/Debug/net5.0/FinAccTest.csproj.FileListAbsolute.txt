@@ -1,0 +1,5 @@
+C:\Users\misha\OneDrive\Documents\FinAcc\FinancialAccounting\FinAccTest\obj\Debug\net5.0\FinAccTest.csproj.AssemblyReference.cache
+C:\Users\misha\OneDrive\Documents\FinAcc\FinancialAccounting\FinAccTest\obj\Debug\net5.0\FinAccTest.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\misha\OneDrive\Documents\FinAcc\FinancialAccounting\FinAccTest\obj\Debug\net5.0\FinAccTest.AssemblyInfoInputs.cache
+C:\Users\misha\OneDrive\Documents\FinAcc\FinancialAccounting\FinAccTest\obj\Debug\net5.0\FinAccTest.AssemblyInfo.cs
+C:\Users\misha\OneDrive\Documents\FinAcc\FinancialAccounting\FinAccTest\obj\Debug\net5.0\FinAccTest.csproj.CoreCompileInputs.cache

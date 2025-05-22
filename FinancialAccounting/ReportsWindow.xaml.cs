@@ -187,9 +187,11 @@ namespace FinancialAccounting
                         .Where(r => r.Type == "Income")
                         .Sum(r => r.Amount);
 
-                    decimal totalExpense = filteredData
+                    decimal totalExpense = Math.Abs(
+                     filteredData
                         .Where(r => r.Type == "Expense")
-                        .Sum(r => r.Amount);
+                        .Sum(r => r.Amount)
+                        );
 
                     decimal balance = totalIncome - totalExpense;
 
@@ -243,18 +245,13 @@ namespace FinancialAccounting
                     {
                         using (var writer = new StreamWriter(dialog.FileName, false, Encoding.UTF8))
                         {
-                            // 🟧 Шапка
-
                             string fullAccountNumber = GetAccountNumberById(_accountId);
                             string exportDate = DateTime.Now.ToString("dd.MM.yyyy HH:mm");
                             writer.WriteLine($"Дата экспорта: {exportDate}");
-                            writer.WriteLine($"Счёт: {fullAccountNumber}"); // полный номер счёта
-                            writer.WriteLine(); // Пустая строка
-
-                            // 🟧 Заголовки таблицы
+                            writer.WriteLine($"Счёт: {fullAccountNumber}"); 
+                            writer.WriteLine();                           
                             writer.WriteLine("Дата;Тип;Категория;Сумма;Описание");
 
-                            // 🟧 Данные
                             foreach (var record in records)
                             {
                                 writer.WriteLine($"{record.Date};{record.Type};{record.Category};{record.Amount};\"{record.Description}\"");
@@ -296,16 +293,14 @@ namespace FinancialAccounting
                             MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
                             mainPart.Document = new Word.Document();
                             Word.Body body = mainPart.Document.AppendChild(new Word.Body());
-
-                            // Шапка документа
+                           
                             AddHeaderParagraph(body, $"Дата экспорта: {DateTime.Now:dd.MM.yyyy HH:mm}");
                             AddHeaderParagraph(body, $"Счёт: {GetAccountNumberById(_accountId)}");
                             body.AppendChild(new Word.Paragraph(new Word.Run(new Word.Text(""))));
 
-                            // Создание таблицы
+                            
                             Word.Table table = new Word.Table();
 
-                            // Стили таблицы
                             Word.TableProperties tableProps = new Word.TableProperties(
                                 new Word.TableBorders(
                                     new Word.TopBorder() { Val = Word.BorderValues.Single, Size = 4 },
@@ -335,7 +330,6 @@ namespace FinancialAccounting
 
                             body.AppendChild(table);
 
-                            // Итоги
                             AddTotalParagraph(body, IncomeTotalTextBlock.Text);
                             AddTotalParagraph(body, ExpenseTotalTextBlock.Text);
                             AddTotalParagraph(body, BalanceTotalTextBlock.Text);
@@ -464,7 +458,16 @@ namespace FinancialAccounting
                     }
 
                     y += lineHeight;
+                    List<ReportRecord> records = ReportDataGrid.Items.Cast<ReportRecord>().ToList();
+                    decimal totalIncome = records
+                        .Where(r => r.Type == "Income")
+                        .Sum(r => r.Amount);
 
+                    decimal totalExpense = records
+                        .Where(r => r.Type == "Expense")
+                        .Sum(r => Math.Abs(r.Amount)); // сумма по модулю
+
+                    decimal balance = totalIncome - totalExpense;
                     // Данные из таблицы
                     foreach (ReportRecord record in ReportDataGrid.Items)
                     {
@@ -485,7 +488,19 @@ namespace FinancialAccounting
                             y = margin;
                         }
                     }
+                    y += lineHeight;
 
+                    if (y + lineHeight * 3 > page.Height - margin)
+                    {
+                        page = document.AddPage();
+                        gfx = XGraphics.FromPdfPage(page);
+                        y = margin;
+                    }
+
+                    gfx.DrawString("Итоговые значения:", boldFont, XBrushes.Black, new XPoint(margin, y)); y += lineHeight;
+                    gfx.DrawString($"Доход: {totalIncome:F2} ₽", font, XBrushes.Black, new XPoint(margin, y)); y += lineHeight;
+                    gfx.DrawString($"Расход: {totalExpense:F2} ₽", font, XBrushes.Black, new XPoint(margin, y)); y += lineHeight;
+                    gfx.DrawString($"Баланс: {balance:F2} ₽", font, XBrushes.Black, new XPoint(margin, y));
                     document.Save(filePath);
                     MessageBox.Show("Экспорт в PDF завершён успешно!");
                 }
@@ -498,7 +513,6 @@ namespace FinancialAccounting
 
         private void SendEmailReport_Click(object sender, RoutedEventArgs e)
         {
-            // Получаем email пользователя из БД
             string userEmail = GetUserEmailById(_userId);       
             if (string.IsNullOrEmpty(userEmail))
             {
@@ -506,7 +520,6 @@ namespace FinancialAccounting
                 return;
             }
 
-            // Диалог выбора уже существующего файла
             var dialog = new OpenFileDialog
             {
                 Filter = "PDF файлы (*.pdf)|*.pdf|Документы Word (*.docx)|*.docx|Все файлы (*.*)|*.*",
@@ -520,7 +533,7 @@ namespace FinancialAccounting
                 try
                 {
                     var message = new MimeMessage();
-                    message.From.Add(new MailboxAddress("Финансовый учёт", "misha.barinow2016@yandex.ru")); // замените
+                    message.From.Add(new MailboxAddress("Финансовый учёт", "misha.barinow2016@yandex.ru")); 
                     message.To.Add(new MailboxAddress("", userEmail));
                     message.Subject = "Ваш финансовый отчёт";
 
@@ -535,7 +548,7 @@ namespace FinancialAccounting
                     using (var client = new SmtpClient())
                     {
                         client.Connect("smtp.yandex.ru", 587, MailKit.Security.SecureSocketOptions.StartTls);
-                        client.Authenticate("misha.barinow2016@yandex.ru", "tenftaiqbsgdqxlf"); // замените!
+                        client.Authenticate("misha.barinow2016@yandex.ru", "tenftaiqbsgdqxlf");
                         client.Send(message);
                         client.Disconnect(true);
                     }

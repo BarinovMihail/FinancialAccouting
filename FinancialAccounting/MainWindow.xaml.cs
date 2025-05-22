@@ -27,7 +27,7 @@ namespace FinancialAccounting
         {
             InitializeComponent();
             _username = username;
-            UsernameTextBlock.Text = $"Привет, {_username}!";
+            UsernameTextBlock.Text = $"Пользователь: {_username}";
             LoadAccounts(_username);
 
         }
@@ -153,9 +153,7 @@ namespace FinancialAccounting
         private void AddAccount_Click(object sender, RoutedEventArgs e)
         {
             var addAccountWindow = new AddAccountWindow(_username);
-            addAccountWindow.Show();
-            this.Close();
-
+            addAccountWindow.Show();    
         }
 
         private void Logout_Click(object sender, RoutedEventArgs e)
@@ -265,7 +263,7 @@ namespace FinancialAccounting
         }
     }
 }
-        public class AccountInfo
+public class AccountInfo
 {
     public int Id { get; set; }
     public string DisplayName { get; set; } // Название для ComboBox

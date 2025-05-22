@@ -36,7 +36,7 @@ namespace FinancialAccounting
                 using (var cmd = db.GetOpenConnection().CreateCommand())
                 {
                     cmd.CommandText = "SELECT get_user_id(@username)";
-                    cmd.Parameters.AddWithValue("username", _username); // переменная логина текущего пользователя
+                    cmd.Parameters.AddWithValue("username", _username); 
 
                     object result = cmd.ExecuteScalar();
                     if (result == null || !int.TryParse(result.ToString(), out userId))
@@ -94,19 +94,15 @@ namespace FinancialAccounting
         }
         private void CardNumberBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            // Разрешаем ввод только цифр
             e.Handled = !char.IsDigit(e.Text, 0);
         }
 
         private void CardNumberBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            // Убираем обработчик, чтобы избежать рекурсии
             CardNumberBox.TextChanged -= CardNumberBox_TextChanged;
 
-            // Удаляем все пробелы
             string text = CardNumberBox.Text.Replace(" ", "");
 
-            // Форматируем текст в виде "XXXX XXXX XXXX XXXX"
             StringBuilder formattedText = new StringBuilder();
             for (int i = 0; i < text.Length; i++)
             {
@@ -117,13 +113,10 @@ namespace FinancialAccounting
                 formattedText.Append(text[i]);
             }
 
-            // Устанавливаем отформатированный текст
             CardNumberBox.Text = formattedText.ToString();
 
-            // Перемещаем курсор в конец
             CardNumberBox.CaretIndex = CardNumberBox.Text.Length;
 
-            // Восстанавливаем обработчик
             CardNumberBox.TextChanged += CardNumberBox_TextChanged;
         }
     }

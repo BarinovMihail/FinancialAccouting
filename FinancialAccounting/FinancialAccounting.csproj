@@ -264,12 +264,20 @@
     <Compile Include="AnalyticsWindow.xaml.cs">
       <DependentUpon>AnalyticsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Class\EmailService .cs" />
+    <Compile Include="Class\IEmailService.cs" />
+    <Compile Include="Class\MistralService.cs" />
+    <Compile Include="Class\OfxExporter.cs" />
+    <Compile Include="Class\OfxParser.cs" />
+    <Compile Include="Class\PdfParser.cs" />
+    <Compile Include="Class\TransactionService.cs" />
     <Compile Include="ReportsWindow.xaml.cs">
       <DependentUpon>ReportsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Class\UserService.cs" />
     <Page Include="AddAccountWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -301,7 +309,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DatabaseManager.cs" />
+    <Compile Include="Class\DatabaseManager.cs" />
     <Compile Include="DataUploadWindow.xaml.cs">
       <DependentUpon>DataUploadWindow.xaml</DependentUpon>
     </Compile>
@@ -311,7 +319,7 @@
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PasswordEncryptor.cs" />
+    <Compile Include="Class\PasswordEncryptor.cs" />
     <Compile Include="RegisterWindow.xaml.cs">
       <DependentUpon>RegisterWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -356,7 +364,6 @@
     <Resource Include="finance_icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Class\" />
     <Folder Include="Window\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

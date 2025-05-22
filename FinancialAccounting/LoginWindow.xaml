@@ -61,7 +61,7 @@
                 Click="LoginButton_Click"/>
 
         <!-- Надпись "Нет аккаунта?" -->
-        <TextBlock Grid.Row="4" Margin="0,20,0,0" HorizontalAlignment="Center" Foreground="White" Height="16" VerticalAlignment="Top" MouseDown="RegisterText_MouseDown">
+        <TextBlock Grid.Row="4" Margin="0,20,0,0" HorizontalAlignment="Center" Foreground="White" Height="16" VerticalAlignment="Top">
             <TextBlock.Inlines>
                 <Run Text="Нет аккаунта? " />
                 <Run Text="Зарегистрируйтесь" Foreground="LightBlue" TextDecorations="Underline"

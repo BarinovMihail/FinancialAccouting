@@ -13,7 +13,7 @@
         </Grid.RowDefinitions>
 
         <TabControl Grid.Row="0" Background="White" BorderBrush="#FF9800" BorderThickness="1">
-            <!-- 🧑 Пользователь -->
+
             <TabItem Header="Пользователь">
                 <ScrollViewer>
                     <StackPanel Margin="20" Background="#FFFDF9F3">
@@ -52,7 +52,6 @@
                 </ScrollViewer>
             </TabItem>
 
-            <!-- 💳 Счета -->
             <TabItem Header="Счета">
                 <ScrollViewer>
                     <StackPanel Margin="20" Background="#FFFDF9F3">
@@ -82,8 +81,6 @@
                 </ScrollViewer>
             </TabItem>
         </TabControl>
-
-        <!-- Назад -->
         <Button Grid.Row="1"
                 Content="Назад"
                 HorizontalAlignment="Left"

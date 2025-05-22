@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Npgsql;
 using System.Net.Http;
+using FinancialAccounting.Class;
 
 namespace FinancialAccounting
 {
@@ -74,7 +75,6 @@ namespace FinancialAccounting
             if (endDate.HasValue)
                 query += " AND date <= @endDate";
 
-            // Используем поле класса!
             data.Clear();
             using (var dbManager = new DatabaseManager())
             {
@@ -104,19 +104,16 @@ namespace FinancialAccounting
                 reader.Close();
             }
 
-            // Очищаем графики
             MainChart.Series.Clear();
             MainChart.AxisX.Clear();
             MainChart.AxisY.Clear();
             PieChart.Series.Clear();
 
-            // Отображаем данные на нужном графике
             if (chartType == "Гистограмма")
             {
                 MainChart.Visibility = Visibility.Visible;
                 PieChart.Visibility = Visibility.Collapsed;
 
-                // data — это List<TransactionPoint>
                 var columnSeries = new ColumnSeries
                 {
                     Title = "Сумма",
@@ -178,53 +175,11 @@ namespace FinancialAccounting
                 }
             }
         }
-        private async Task<string> GetMistralAnalysisAsync(string inputData)
-        {
-            const string apiKey = "WdNK0AwaJg27oRiLv67gd9Ztao8jcAt6";
-            const string apiUrl = "https://api.mistral.ai/v1/chat/completions";
-
-            using (var httpClient = new HttpClient())
-            {
-                httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
-
-                var requestBody = new
-                {
-                    model = "mistral-tiny", // или "mistral-small", "mistral-medium" если доступны
-                    messages = new[]
-                    {
-                new { role = "system", content = "Ты финансовый аналитик. Проанализируй данные и дай краткий вывод на русском." },
-                new { role = "user", content = inputData }
-            },
-                    max_tokens = 200,
-                    temperature = 0.7
-                };
-
-                var content = new StringContent(
-                    System.Text.Json.JsonSerializer.Serialize(requestBody),
-                    Encoding.UTF8,
-                    "application/json"
-                );
-
-                var response = await httpClient.PostAsync(apiUrl, content);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    var error = await response.Content.ReadAsStringAsync();
-                    throw new Exception($"Mistral API Error: {error}");
-                }
-
-                var responseJson = await response.Content.ReadAsStringAsync();
-                var result = System.Text.Json.JsonSerializer.Deserialize<MistralResponse>(responseJson);
-
-                return result?.choices?.FirstOrDefault()?.message?.content?.Trim() ?? "Анализ не удался";
-            }
-        }
-
+       
         private async void GenerateAnalysis_Click(object sender, RoutedEventArgs e)
         {
             NeuroAnalysisText.Text = "Анализируем данные...";
 
-            // Формируем расширенные данные для анализа
             var summary = new StringBuilder();
             summary.AppendLine($"Период: {StartDatePicker.SelectedDate?.ToShortDateString()} - {EndDatePicker.SelectedDate?.ToShortDateString()}");
             summary.AppendLine($"Тип операций: {(TypeComboBox.SelectedItem as ComboBoxItem)?.Content ?? "Все"}");
@@ -235,7 +190,7 @@ namespace FinancialAccounting
             if (data.Count > 0)
             {
                 summary.AppendLine("\nПримеры транзакций:");
-                foreach (var transaction in data.Take(5))
+                foreach (var transaction in data.Take(10))
                 {
                     summary.AppendLine($"- {transaction.Date:d}: {transaction.Amount:C} ({transaction.Description})");
                 }
@@ -243,7 +198,8 @@ namespace FinancialAccounting
 
             try
             {
-                string analysis = await GetMistralAnalysisAsync(summary.ToString());
+                var mistralService = new MistralService(new HttpClient());
+                string analysis = await mistralService.GetAnalysisAsync(summary.ToString());
                 NeuroAnalysisText.Text = analysis;
             }
             catch (Exception ex)
@@ -257,23 +213,12 @@ namespace FinancialAccounting
             this.Close();
         }
     }
+   
     public class TransactionPoint
     {
         public DateTime Date { get; set; }
         public decimal Amount { get; set; }
         public string Description { get; set; }
-    }
-    public class MistralResponse
-    {
-        public List<Choice> choices { get; set; }
-        public class Choice
-        {
-            public Message message { get; set; }
-        }
-        public class Message
-        {
-            public string content { get; set; }
-        }
     }
 }
 
